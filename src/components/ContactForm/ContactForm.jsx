@@ -6,7 +6,7 @@ import css from './ContactForm.module.css';
 
 export default function ContactForm() {
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setNumber] = useState('');
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
 
@@ -16,7 +16,7 @@ export default function ContactForm() {
       case 'name':
         setName(value);
         break;
-      case 'number':
+      case 'phone':
         setNumber(value);
         break;
       default:
@@ -29,10 +29,9 @@ export default function ContactForm() {
     const inputValue = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
-    const newContact = { name, phone: number };
     inputValue
       ? alert(inputValue.name + `is already in contacts`)
-      : dispatch(addContact(newContact));
+      : dispatch(addContact({ name, phone }));
     reset();
   };
 
@@ -62,8 +61,8 @@ export default function ContactForm() {
       </label>
       <input
         type="tel"
-        name="number"
-        value={number}
+        name="phone"
+        value={phone}
         onChange={handleInputChange}
         className={css.input}
         pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"

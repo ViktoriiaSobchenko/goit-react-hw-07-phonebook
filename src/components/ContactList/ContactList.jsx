@@ -1,43 +1,17 @@
-import { MdPermContactCalendar } from 'react-icons/md';
-import { deleteContact } from '../../redux/operations';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectContacts, selectFilter } from '../../redux/selectors';
+import { useSelector } from 'react-redux';
+import { selectVisibleContacts } from '../../redux/selectors';
 import PropTypes from 'prop-types';
+import ContactItem from './ContactItem';
 import css from './ContactList.module.css';
-const getvisibleContacts = (contacts, filter) => {
-  if (!filter) {
-    return contacts;
-  }
-  return contacts.filter(contact => {
-    return contact.name.toLowerCase().includes(filter.toLowerCase());
-  });
-};
+
 const ContactList = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
-  const filter = useSelector(selectFilter);
-
-  const visibleContacts = getvisibleContacts(contacts, filter);
-
-  const onDeleteContact = id => dispatch(deleteContact(id));
+  const visibleContacts = useSelector(selectVisibleContacts);
 
   return (
     <ul className={css.list}>
-      {visibleContacts.map((contact, id) => (
+      {visibleContacts.map(({ id, name, phone }) => (
         <li key={id} className={css.item}>
-          <MdPermContactCalendar />
-          <div className={css.wrapper}>
-            <p className={css.text}>{contact.name}:</p>
-            <p className={css.text}>{contact.phone}</p>
-          </div>
-          <button
-            type="button"
-            className={css.btn}
-            id={contact.id}
-            onClick={() => onDeleteContact(contact.id)}
-          >
-            Delete
-          </button>
+          <ContactItem name={name} phone={phone} id={id} />
         </li>
       ))}
     </ul>
@@ -45,11 +19,7 @@ const ContactList = () => {
 };
 
 ContactList.propType = {
-  contacts: {
-    name: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-  },
+  contacts: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string.isRequired)),
 };
 
 export default ContactList;
